@@ -51,6 +51,7 @@ type GlobalFlags struct {
 	TLSConfigPath         string   `name:"web.config" help:"Path to the file having Prometheus TLS config for basic auth"`
 	TimeoutOffset         int      `name:"web.timeout-offset" help:"Offset to subtract from the request timeout in seconds" default:"1"`
 	LogLevel              string   `name:"log.level" help:"Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]" enum:"debug,info,warn,error,fatal" default:"error"`
+	LogFormat             string   `name:"log.format" help:"Output format of log messages. Valid formats: [logfmt, json]" enum:"logfmt,json" default:"logfmt"`
 	ConnectTimeoutMS      int      `name:"mongodb.connect-timeout-ms" help:"Connection timeout in milliseconds" default:"5000"`
 
 	EnableExporterMetrics    bool `name:"collector.exporter-metrics" help:"Enable collecting metrics about the exporter itself (process_*, go_*)" negatable:"" default:"True"`
@@ -108,8 +109,11 @@ func main() {
 
 	logLevel := promslog.NewLevel()
 	_ = logLevel.Set(opts.LogLevel)
+	logFormat := promslog.NewFormat()
+	_ = logFormat.Set(opts.LogFormat)
 	logger := promslog.New(&promslog.Config{
-		Level: logLevel,
+		Level:  logLevel,
+		Format: logFormat,
 	})
 	logger.Debug("Compatible mode", "compatible_mode", opts.CompatibleMode)
 
