@@ -155,6 +155,8 @@ func buildExporter(opts GlobalFlags, uri string, log *slog.Logger) *exporter.Exp
 	default:
 		nodeName = uriParsed.Host
 	}
+	
+	log = log.With("target", nodeName)
 
 	collStatsNamespaces := []string{}
 	if opts.CollStatsNamespaces != "" {
